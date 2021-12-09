@@ -2,9 +2,10 @@
 
 namespace App;
 
+use Illuminate\Support\Str;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -16,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'username', 'email', 'password', 'email_verified_at'
     ];
 
     /**
@@ -36,4 +37,33 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            if (empty($model->{$model->getKeyName()})) {
+                $model->{$model->getKeyName()} = Str::uuid();
+            }
+        });
+    }
+
+    public function profile()
+    {
+        return $this->hasOne('App\Models\Profile');
+    }
+
+    public function feedback()
+    {
+        return $this->hasMany('App\Models\Feedback');
+    }
+
+    public function otp_code()
+    {
+        return $this->hasOne('App\Models\OtpCode');
+    }
 }
