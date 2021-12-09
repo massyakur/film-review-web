@@ -62,7 +62,7 @@ class ProfileController extends Controller
         if ($profile) {
             return response()->json([
                 'success' => true,
-                'message' => 'Profile is added successfully',
+                'message' => 'Data Profile is added successfully',
                 'data'    => $profile
             ], 201);
         }
@@ -70,7 +70,7 @@ class ProfileController extends Controller
         # gagal menyimpan data ke database
         return response()->json([
             'success' => false,
-            'message' => 'Data Genre failed to save',
+            'message' => 'Data Profile failed to save',
         ], 409);
     }
 
@@ -102,8 +102,8 @@ class ProfileController extends Controller
             # meng-update data profile
             $profile->update([
                 'age'  => $request->age ?? $profile->age,
-                'bio' => $request->bio,
-                'address' => $request->address
+                'bio' => $request->bio ?? $profile->bio,
+                'address' => $request->address ?? $profile->address
             ]);
 
             return response()->json([

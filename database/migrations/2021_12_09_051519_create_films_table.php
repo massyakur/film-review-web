@@ -17,7 +17,7 @@ class CreateFilmsTable extends Migration
             $table->uuid('id')->primary();
             $table->string('title', 45);
             $table->text('description');
-            $table->year('tahun');
+            $table->integer('tahun');
             $table->uuid('genre_id');
             $table->foreign('genre_id')->references('id')->on('genres');
             $table->timestamps();

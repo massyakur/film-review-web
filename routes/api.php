@@ -35,3 +35,7 @@ Route::apiResource('genre', 'GenreController');
 
 # Route Resource Profile
 Route::apiResource('profile', 'ProfileController');
+
+# Route Resource Film
+Route::apiResource('film', 'FilmController');
+Route::get('/film-by-id', 'FilmController@getDataById');
