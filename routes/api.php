@@ -32,3 +32,6 @@ Route::group([
 
 # Route Resource Genre
 Route::apiResource('genre', 'GenreController');
+
+# Route Resource Profile
+Route::apiResource('profile', 'ProfileController');

@@ -59,7 +59,7 @@ class GenreController extends Controller
         if ($genre) {
             return response()->json([
                 'success' => true,
-                'message' => 'Genre is added successfully',
+                'message' => 'Data Genre is added successfully',
                 'data'    => $genre
             ], 201);
         }
@@ -67,7 +67,7 @@ class GenreController extends Controller
         # gagal menyimpan data ke database
         return response()->json([
             'success' => false,
-            'message' => 'Genre failed to save',
+            'message' => 'Data Genre failed to save',
         ], 409);
     }
 
@@ -133,7 +133,7 @@ class GenreController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Genre is update successfully',
+                'message' => 'Data Genre is update successfully',
                 'data'    => $genre
             ], 200);
         }
