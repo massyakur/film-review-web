@@ -18,8 +18,8 @@ class CreateProfilesTable extends Migration
             $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->integer('age');
-            $table->text('bio');
-            $table->text('address');
+            $table->text('bio')->nullable();
+            $table->text('address')->nullable();
             $table->timestamps();
         });
     }

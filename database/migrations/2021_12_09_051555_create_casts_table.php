@@ -17,7 +17,7 @@ class CreateCastsTable extends Migration
             $table->uuid('id')->primary();
             $table->string('name', 45);
             $table->integer('age');
-            $table->text('bio');
+            $table->text('bio')->nullable();
             $table->timestamps();
         });
     }

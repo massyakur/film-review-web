@@ -29,3 +29,6 @@ Route::group([
     Route::post('update-password', 'UpdatePasswordController')->name('auth.update_password');
     Route::post('login', 'LoginController')->name('auth.login');
 });
+
+# Route Resource Genre
+Route::apiResource('genre', 'GenreController');
