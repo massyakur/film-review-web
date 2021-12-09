@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
-use App\OtpCode;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class VerificationController extends Controller
+class UpdatePasswordController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -23,7 +22,8 @@ class VerificationController extends Controller
 
         # membuat validasi
         $validator = Validator::make($allRequest, [
-            'otp'   => 'required'
+            'email'   => 'required',
+            'password' => 'required|confirmed|min:6'
         ]);
 
         # membuat kondisi jika ada salah satu
@@ -34,33 +34,22 @@ class VerificationController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        $otp_code = OtpCode::where('otp', $request->otp)->first();
+        $user = User::where('email', $request->email)->first();
 
-        if (!$otp_code) {
+        if (!$user) {
             return response()->json([
                 'success' => false,
-                'message' => 'OTP Code tidak ditemukan'
+                'message' => 'email tidak ditemukan'
             ], 400);
         }
 
-        $now = Carbon::now();
-        if ($now > $otp_code->valid_until) {
-            return response()->json([
-                'success' => false,
-                'message' => 'OTP Code tidak berlaku lagi'
-            ], 400);
-        }
-
-        $user = User::find($otp_code->user_id);
         $user->update([
-            'email_verified_at' => $now
+            'password' => Hash::make($request->password)
         ]);
-
-        $otp_code->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'User berhasil diverifikasi',
+            'message' => 'Password Berhasil diubah',
             'data' => $user
         ], 200);
     }

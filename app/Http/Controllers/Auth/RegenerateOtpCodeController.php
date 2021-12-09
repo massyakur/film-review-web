@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
-class VerificationController extends Controller
+class RegenerateOtpCodeController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -23,7 +23,7 @@ class VerificationController extends Controller
 
         # membuat validasi
         $validator = Validator::make($allRequest, [
-            'otp'   => 'required'
+            'email'   => 'required'
         ]);
 
         # membuat kondisi jika ada salah satu
@@ -34,34 +34,34 @@ class VerificationController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        $otp_code = OtpCode::where('otp', $request->otp)->first();
+        $user = User::where('email', $request->email)->first();
 
-        if (!$otp_code) {
-            return response()->json([
-                'success' => false,
-                'message' => 'OTP Code tidak ditemukan'
-            ], 400);
+        if ($user->otp_code) {
+            $user->otp_code->delete();
         }
+
+        do {
+            $random = mt_rand(100000, 999999);
+            $check = OtpCode::where('otp', $random)->first();
+        } while ($check);
 
         $now = Carbon::now();
-        if ($now > $otp_code->valid_until) {
-            return response()->json([
-                'success' => false,
-                'message' => 'OTP Code tidak berlaku lagi'
-            ], 400);
-        }
 
-        $user = User::find($otp_code->user_id);
-        $user->update([
-            'email_verified_at' => $now
+        $otp_code = OtpCode::create([
+            'otp' => $random,
+            'valid_until' => $now->addMinutes(60),
+            'user_id' => $user->id
         ]);
 
-        $otp_code->delete();
+        # memanggil event OtpCodeStoredEvent
 
         return response()->json([
             'success' => true,
-            'message' => 'User berhasil diverifikasi',
-            'data' => $user
-        ], 200);
+            'message' => 'Otp Code successfully generated',
+            'data' => [
+                'user' => $user,
+                'otp_code' => $otp_code
+            ]
+        ]);
     }
 }

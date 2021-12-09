@@ -2,72 +2,64 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
 use App\User;
-use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Support\Facades\Hash;
+use App\OtpCode;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
-
-    use RegistersUsers;
-
     /**
-     * Where to redirect users after registration.
+     * Handle the incoming request.
      *
-     * @var string
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function __invoke(Request $request)
     {
-        $this->middleware('guest');
-    }
+        $allRequest = $request->all();
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        # membuat validasi
+        $validator = Validator::make($allRequest, [
+            'name'   => 'required',
+            'email' => 'required|unique:users,email|email',
+            'username' => 'required|unique:users,username'
         ]);
-    }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\User
-     */
-    protected function create(array $data)
-    {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+        # membuat kondisi jika ada salah satu
+        # attribute data yang kosong, dan
+        # memberikan respon dalam bentuk JSON
+        # status code 400 artinya kesalahan saat validasi
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $user = User::create($allRequest);
+
+        do {
+            $random = mt_rand(100000, 999999);
+            $check = OtpCode::where('otp', $random)->first();
+        } while ($check);
+
+        $now = Carbon::now();
+
+        $otp_code = OtpCode::create([
+            'otp' => $random,
+            'valid_until' => $now->addMinutes(60),
+            'user_id' => $user->id
+        ]);
+
+        # memanggil event RegisterStoredEvent
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User is added successfully',
+            'data' => [
+                'user' => $user,
+                'otp_code' => $otp_code
+            ]
         ]);
     }
 }
