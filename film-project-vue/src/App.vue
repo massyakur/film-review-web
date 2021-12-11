@@ -94,11 +94,11 @@ export default {
     drawer : true,
     menus : [
       { title : 'Home', icon : 'mdi-home', route : '/'},
-      { title : 'Film', icon : 'mdi-note', route : '/Film'},
+      { title : 'Films', icon : 'mdi-note', route : '/Films'},
       { title : 'Cast', icon : 'mdi-note', route : '/Cast'},
       { title : 'Genre', icon : 'mdi-note', route : '/Genre'}
     ],
-    guest : true
+    guest : false
   }),
 };
 </script>
