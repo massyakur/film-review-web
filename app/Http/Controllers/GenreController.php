@@ -145,4 +145,27 @@ class GenreController extends Controller
             'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
         ], 404);
     }
+
+    public function search($name)
+    {
+        $genre = Genre::where('name', 'like', '%' . $name . '%')->get();
+
+        $total = count($genre);
+
+        if ($total) {
+            $data = [
+                'message' => 'Get searched resource',
+                'total' => $total,
+                'data' => $genre
+            ];
+
+            return response()->json($data, 200);
+        } else {
+            $data = [
+                'message' => 'Resource not found'
+            ];
+
+            return response()->json($data, 404);
+        }
+    }
 }

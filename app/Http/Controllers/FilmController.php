@@ -179,4 +179,27 @@ class FilmController extends Controller
             'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
         ], 404);
     }
+
+    public function search($name)
+    {
+        $film = Film::where('title', 'like', '%' . $name . '%')->get();
+
+        $total = count($film);
+
+        if ($total) {
+            $data = [
+                'message' => 'Get searched resource',
+                'total' => $total,
+                'data' => $film
+            ];
+
+            return response()->json($data, 200);
+        } else {
+            $data = [
+                'message' => 'Resource not found'
+            ];
+
+            return response()->json($data, 404);
+        }
+    }
 }

@@ -32,6 +32,7 @@ Route::group([
 
 # Route Resource Genre
 Route::apiResource('genre', 'GenreController');
+Route::get('/genre/search/{name}', 'GenreController@search');
 
 # Route Resource Profile
 Route::apiResource('profile', 'ProfileController');
@@ -39,10 +40,14 @@ Route::apiResource('profile', 'ProfileController');
 # Route Resource Film
 Route::apiResource('film', 'FilmController');
 Route::get('/film-by-id', 'FilmController@getDataById');
+Route::get('/film/search/{name}', 'FilmController@search');
 
 # Route Resource Cast
+# Method (GET) Search Resource by name
 Route::apiResource('cast', 'CastController');
+Route::get('/cast/search/{name}', 'CastController@search');
 
 # Route Resource Peran
 Route::apiResource('peran', 'PeranController');
 Route::get('/peran-by-id', 'PeranController@getDataById');
+Route::get('/peran/search/{name}', 'PeranController@search');

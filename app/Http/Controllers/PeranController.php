@@ -165,4 +165,27 @@ class PeranController extends Controller
             'data'    => $peran
         ], 200);
     }
+
+    public function search($name)
+    {
+        $peran = Peran::where('name', 'like', '%' . $name . '%')->get();
+
+        $total = count($peran);
+
+        if ($total) {
+            $data = [
+                'message' => 'Get searched resource',
+                'total' => $total,
+                'data' => $peran
+            ];
+
+            return response()->json($data, 200);
+        } else {
+            $data = [
+                'message' => 'Resource not found'
+            ];
+
+            return response()->json($data, 404);
+        }
+    }
 }

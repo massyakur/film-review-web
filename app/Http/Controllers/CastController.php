@@ -149,4 +149,27 @@ class CastController extends Controller
             'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
         ], 404);
     }
+
+    public function search($name)
+    {
+        $cast = Cast::where('name', 'like', '%' . $name . '%')->get();
+
+        $total = count($cast);
+
+        if ($total) {
+            $data = [
+                'message' => 'Get searched resource',
+                'total' => $total,
+                'data' => $cast
+            ];
+
+            return response()->json($data, 200);
+        } else {
+            $data = [
+                'message' => 'Resource not found'
+            ];
+
+            return response()->json($data, 404);
+        }
+    }
 }
