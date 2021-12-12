@@ -20,7 +20,7 @@ class CreateFeedbackTable extends Migration
             $table->uuid('film_id');
             $table->foreign('film_id')->references('id')->on('films');
             $table->text('ulasan');
-            $table->integer('rating');
+            $table->float('rating');
             $table->timestamps();
         });
     }

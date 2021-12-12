@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Peran;
+use App\Feedback;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class PeranController extends Controller
+class FeedbackController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,12 +15,12 @@ class PeranController extends Controller
      */
     public function index()
     {
-        $peran = Peran::latest()->get();
+        $feedback = Feedback::latest()->get();
 
         return response()->json([
             'success' => true,
             'message' => 'Semua daftar table peran berhasil ditampilkan',
-            'data'    => $peran
+            'data'    => $feedback
         ], 200);
     }
 
@@ -33,32 +33,34 @@ class PeranController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'film_id'   => 'required',
-            'cast_id' => 'required',
-            'name' => 'required|max:45'
+            'user_id'   => 'required',
+            'film_id' => 'required',
+            'ulasan' => 'required',
+            'rating' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/'
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
 
-        $peran = Peran::create([
+        $feedback = Feedback::create([
+            'user_id' => $request->user_id,
             'film_id'  => $request->film_id,
-            'cast_id' => $request->cast_id,
-            'name' => $request->name
+            'ulasan' => $request->ulasan,
+            'rating' => $request->rating
         ]);
 
-        if ($peran) {
+        if ($feedback) {
             return response()->json([
                 'success' => true,
-                'message' => 'Data Peran is added successfully',
-                'data'    => $peran
+                'message' => 'Data Feedback is added successfully',
+                'data'    => $feedback
             ], 201);
         }
 
         return response()->json([
             'success' => false,
-            'message' => 'Data Peran failed to save',
+            'message' => 'Data Feedback failed to save',
         ], 409);
     }
 
@@ -70,13 +72,13 @@ class PeranController extends Controller
      */
     public function show($id)
     {
-        $peran = Peran::find($id);
+        $feedback = Feedback::find($id);
 
-        if ($peran) {
+        if ($feedback) {
             return response()->json([
                 'success' => true,
-                'message' => 'Get Detail Peran',
-                'data'    => $peran
+                'message' => 'Get Detail Feedback',
+                'data'    => $feedback
             ], 200);
         }
 
@@ -96,24 +98,25 @@ class PeranController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'max:45'
+            'rating' => 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
 
-        $peran = Peran::find($id);
+        $feedback = Feedback::find($id);
 
-        if ($peran) {
-            $peran->update([
-                'name'  => $request->name ?? $peran->name
+        if ($feedback) {
+            $feedback->update([
+                'ulasan'  => $request->ulasan ?? $feedback->ulasan,
+                'rating' => $request->rating ?? $feedback->rating
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Data Peran is update successfully',
-                'data'    => $peran
+                'message' => 'Data Feedback is update successfully',
+                'data'    => $feedback
             ], 200);
         }
 
@@ -131,15 +134,15 @@ class PeranController extends Controller
      */
     public function destroy($id)
     {
-        $peran = Peran::find($id);
+        $feedback = Feedback::find($id);
 
-        if ($peran) {
-            $peran->delete();
+        if ($feedback) {
+            $feedback->delete();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Data Peran is delete successfully',
-                'data'    => $peran
+                'message' => 'Data Feedback is delete successfully',
+                'data'    => $feedback
             ], 200);
         }
 
@@ -151,39 +154,16 @@ class PeranController extends Controller
 
     public function getDataById(Request $request)
     {
+        $user_id = $request->user_id;
         $film_id = $request->film_id;
-        $cast_id = $request->cast_id;
 
-        $peran = Peran::where('film_id', $film_id)->latest()->get();
-        $peran = Peran::where('cast_id', $cast_id)->latest()->get();
+        $feedback = Feedback::where('user_id', $user_id)->latest()->get();
+        $feedback = Feedback::where('film_id', $film_id)->latest()->get();
 
         return response()->json([
             'success' => true,
-            'message' => 'Data film id : ' . $film_id . ' dan data cast id : ' . $cast_id . ' berhasil ditampilkan',
-            'data'    => $peran
+            'message' => 'Data film id : ' . $user_id . ' dan data cast id : ' . $film_id . ' berhasil ditampilkan',
+            'data'    => $feedback
         ], 200);
-    }
-
-    public function search($name)
-    {
-        $peran = Peran::where('name', 'like', '%' . $name . '%')->get();
-
-        $total = count($peran);
-
-        if ($total) {
-            $data = [
-                'message' => 'Get searched resource',
-                'total' => $total,
-                'data' => $peran
-            ];
-
-            return response()->json($data, 200);
-        } else {
-            $data = [
-                'message' => 'Resource not found'
-            ];
-
-            return response()->json($data, 404);
-        }
     }
 }

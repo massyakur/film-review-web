@@ -51,3 +51,7 @@ Route::get('/cast/search/{name}', 'CastController@search');
 Route::apiResource('peran', 'PeranController');
 Route::get('/peran-by-id', 'PeranController@getDataById');
 Route::get('/peran/search/{name}', 'PeranController@search');
+
+# Route Resource Feedback
+Route::apiResource('feedback', 'FeedbackController');
+Route::get('/feedback-by-id', 'FeedbackController@getDataById');
