@@ -17,9 +17,12 @@ class GenreController extends Controller
     {
         $genre = Genre::latest()->get();
 
+        $total = count($genre);
+
         return response()->json([
             'success' => true,
             'message' => 'Semua daftar table genre berhasil ditampilkan',
+            'total' => $total,
             'data'    => $genre
         ], 200);
     }

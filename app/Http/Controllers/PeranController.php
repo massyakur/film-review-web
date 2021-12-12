@@ -17,9 +17,12 @@ class PeranController extends Controller
     {
         $peran = Peran::latest()->get();
 
+        $total = count($peran);
+
         return response()->json([
             'success' => true,
             'message' => 'Semua daftar table peran berhasil ditampilkan',
+            'total' => $total,
             'data'    => $peran
         ], 200);
     }
@@ -157,9 +160,12 @@ class PeranController extends Controller
         $peran = Peran::where('film_id', $film_id)->latest()->get();
         $peran = Peran::where('cast_id', $cast_id)->latest()->get();
 
+        $total = count($peran);
+
         return response()->json([
             'success' => true,
             'message' => 'Data film id : ' . $film_id . ' dan data cast id : ' . $cast_id . ' berhasil ditampilkan',
+            'total' => $total,
             'data'    => $peran
         ], 200);
     }

@@ -17,9 +17,12 @@ class FilmController extends Controller
     {
         $film = Film::latest()->get();
 
+        $total = count($film);
+
         return response()->json([
             'success' => true,
             'message' => 'Semua daftar table film berhasil ditampilkan',
+            'total' => $total,
             'data'    => $film
         ], 200);
     }
@@ -30,9 +33,12 @@ class FilmController extends Controller
 
         $film = Film::where('genre_id', $genre_id)->latest()->get();
 
+        $total = count($film);
+
         return response()->json([
             'success' => true,
             'message' => 'Data user id : ' . $genre_id . ' berhasil ditampilkan',
+            'total' => $total,
             'data'    => $film
         ], 200);
     }

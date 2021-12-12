@@ -17,9 +17,12 @@ class FeedbackController extends Controller
     {
         $feedback = Feedback::latest()->get();
 
+        $total = count($feedback);
+
         return response()->json([
             'success' => true,
             'message' => 'Semua daftar table peran berhasil ditampilkan',
+            'total' => $total,
             'data'    => $feedback
         ], 200);
     }
@@ -160,9 +163,12 @@ class FeedbackController extends Controller
         $feedback = Feedback::where('user_id', $user_id)->latest()->get();
         $feedback = Feedback::where('film_id', $film_id)->latest()->get();
 
+        $total = count($feedback);
+
         return response()->json([
             'success' => true,
             'message' => 'Data film id : ' . $user_id . ' dan data cast id : ' . $film_id . ' berhasil ditampilkan',
+            'total' => $total,
             'data'    => $feedback
         ], 200);
     }

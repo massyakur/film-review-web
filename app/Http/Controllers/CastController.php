@@ -17,9 +17,12 @@ class CastController extends Controller
     {
         $cast = Cast::latest()->get();
 
+        $total = count($cast);
+
         return response()->json([
             'success' => true,
             'message' => 'Semua daftar table cast berhasil ditampilkan',
+            'total' => $total,
             'data'    => $cast
         ], 200);
     }
