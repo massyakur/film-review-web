@@ -75,7 +75,7 @@ class PeranController extends Controller
         if ($peran) {
             return response()->json([
                 'success' => true,
-                'message' => 'Get Detail Cast',
+                'message' => 'Get Detail Peran',
                 'data'    => $peran
             ], 200);
         }

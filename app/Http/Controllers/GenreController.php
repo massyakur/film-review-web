@@ -15,11 +15,8 @@ class GenreController extends Controller
      */
     public function index()
     {
-        # mengambil data dari tabel genre
         $genre = Genre::latest()->get();
 
-        # memberikan respon dalam bentuk JSON
-        # dengan status code 200 yang artinya berhasil
         return response()->json([
             'success' => true,
             'message' => 'Semua daftar table genre berhasil ditampilkan',
@@ -35,27 +32,18 @@ class GenreController extends Controller
      */
     public function store(Request $request)
     {
-        # membuat validasi
         $validator = Validator::make($request->all(), [
             'name'   => 'required'
         ]);
 
-        # membuat kondisi jika ada salah satu
-        # attribute data yang kosong, dan
-        # memberikan respon dalam bentuk JSON
-        # status code 400 artinya kesalahan saat validasi
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
 
-        # menyimpan data ke database
         $genre = Genre::create([
             'name'  => $request->name
         ]);
 
-        # memberikan response message jika
-        # data berhasil disimpan ke db, dan
-        # memberikan response status code 201
         if ($genre) {
             return response()->json([
                 'success' => true,
@@ -64,7 +52,6 @@ class GenreController extends Controller
             ], 201);
         }
 
-        # gagal menyimpan data ke database
         return response()->json([
             'success' => false,
             'message' => 'Data Genre failed to save',
@@ -79,12 +66,9 @@ class GenreController extends Controller
      */
     public function show($id)
     {
-        # mencari data genre sesuai id nya
         $genre = Genre::find($id);
 
         if ($genre) {
-            # memberikan respon 200 dalam bentuk JSON
-            # jika sesuai dengan id nya
             return response()->json([
                 'success' => true,
                 'message' => 'Get Detail Genre',
@@ -92,8 +76,6 @@ class GenreController extends Controller
             ], 200);
         }
 
-        # memberikan respon 404 dalam bentuk JSON
-        # jika tidak sesuai dengan id nya
         return response()->json([
             'success' => false,
             'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
@@ -109,20 +91,14 @@ class GenreController extends Controller
      */
     public function update(Request $request, $id)
     {
-        # membuat validasi
         $validator = Validator::make($request->all(), [
             'name'   => 'required'
         ]);
 
-        # membuat kondisi jika ada salah satu
-        # attribute data yang kosong, dan
-        # memberikan respon dalam bentuk JSON
-        # status code 400 artinya kesalahan saat validasi
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
 
-        # mencari data genre sesuai id nya
         $genre = Genre::find($id);
 
         if ($genre) {
@@ -138,9 +114,6 @@ class GenreController extends Controller
             ], 200);
         }
 
-        # kesalahan dalam mengupdate data
-        # maka akan muncul status code 404
-        # jika tidak sesuai dengan id nya
         return response()->json([
             'success' => false,
             'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
@@ -167,9 +140,6 @@ class GenreController extends Controller
             ], 200);
         }
 
-        # kesalahan dalam menghapus data
-        # maka akan muncul status code 404
-        # jika tidak sesuai dengan id nya
         return response()->json([
             'success' => false,
             'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'

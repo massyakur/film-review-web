@@ -34,21 +34,15 @@ class ProfileController extends Controller
      */
     public function store(Request $request)
     {
-        # membuat validasi
         $validator = Validator::make($request->all(), [
             'user_id'   => 'required',
             'age' => 'required|numeric|digits:2',
         ]);
 
-        # membuat kondisi jika ada salah satu
-        # attribute data yang kosong, dan
-        # memberikan respon dalam bentuk JSON
-        # status code 400 artinya kesalahan saat validasi
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
 
-        # menyimpan data ke database
         $profile = Profile::create([
             'user_id'  => $request->user_id,
             'age' => $request->age,
@@ -56,9 +50,6 @@ class ProfileController extends Controller
             'address' => $request->address,
         ]);
 
-        # memberikan response message jika
-        # data berhasil disimpan ke db, dan
-        # memberikan response status code 201
         if ($profile) {
             return response()->json([
                 'success' => true,
@@ -67,7 +58,6 @@ class ProfileController extends Controller
             ], 201);
         }
 
-        # gagal menyimpan data ke database
         return response()->json([
             'success' => false,
             'message' => 'Data Profile failed to save',
@@ -83,15 +73,10 @@ class ProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        # membuat validasi
         $validator = Validator::make($request->all(), [
             'age' => 'numeric|digits:2',
         ]);
 
-        # membuat kondisi jika ada salah satu
-        # attribute data yang kosong, dan
-        # memberikan respon dalam bentuk JSON
-        # status code 400 artinya kesalahan saat validasi
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
@@ -99,7 +84,6 @@ class ProfileController extends Controller
         $profile = Profile::find($id);
 
         if ($profile) {
-            # meng-update data profile
             $profile->update([
                 'age'  => $request->age ?? $profile->age,
                 'bio' => $request->bio ?? $profile->bio,
@@ -113,9 +97,6 @@ class ProfileController extends Controller
             ], 200);
         }
 
-        # kesalahan dalam mengupdate data
-        # maka akan muncul status code 404
-        # jika tidak sesuai dengan id nya
         return response()->json([
             'success' => false,
             'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
