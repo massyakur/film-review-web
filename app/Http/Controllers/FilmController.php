@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Validator;
 
 class FilmController extends Controller
 {
+    public function __construct()
+    {
+        return $this->middleware('auth:api')->only(['store', 'update', 'destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -94,8 +99,6 @@ class FilmController extends Controller
         $film = Film::find($id);
 
         if ($film) {
-            # memberikan respon 200 dalam bentuk JSON
-            # jika sesuai dengan id nya
             return response()->json([
                 'success' => true,
                 'message' => 'Get Detail Film',
@@ -103,8 +106,6 @@ class FilmController extends Controller
             ], 200);
         }
 
-        # memberikan respon 404 dalam bentuk JSON
-        # jika tidak sesuai dengan id nya
         return response()->json([
             'success' => false,
             'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
@@ -125,39 +126,33 @@ class FilmController extends Controller
             'tahun' => 'digits:4|numeric|max:' . (date('Y'))
         ]);
 
-        # membuat kondisi jika ada salah satu
-        # attribute data yang kosong, dan
-        # memberikan respon dalam bentuk JSON
-        # status code 400 artinya kesalahan saat validasi
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
 
         $film = Film::find($id);
 
-        if ($film) {
-            # meng-update data profile
-            $film->update([
-                'title'  => $request->title ?? $film->title,
-                'description' => $request->description ?? $film->description,
-                'tahun' => $request->tahun ?? $film->tahun,
-                'genre_id' => $request->genre_id ?? $film->genre_id
-            ]);
+        $user = auth()->user();
 
+        if ($film->feedback->user_id != $user->id) {
             return response()->json([
-                'success' => true,
-                'message' => 'Data Film is update successfully',
-                'data'    => $film
-            ], 200);
+                'success' => false,
+                'message' => 'Anda bukan admin!'
+            ], 403);
         }
 
-        # kesalahan dalam mengupdate data
-        # maka akan muncul status code 404
-        # jika tidak sesuai dengan id nya
+        $film->update([
+            'title'  => $request->title ?? $film->title,
+            'description' => $request->description ?? $film->description,
+            'tahun' => $request->tahun ?? $film->tahun,
+            'genre_id' => $request->genre_id ?? $film->genre_id
+        ]);
+
         return response()->json([
-            'success' => false,
-            'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
-        ], 404);
+            'success' => true,
+            'message' => 'Data Film is update successfully',
+            'data'    => $film
+        ], 200);
     }
 
     /**
@@ -170,20 +165,22 @@ class FilmController extends Controller
     {
         $film = Film::find($id);
 
-        if ($film) {
-            $film->delete();
+        $user = auth()->user();
 
+        if ($film->feedback->user_id != $user->id) {
             return response()->json([
-                'success' => true,
-                'message' => 'Data Film is delete successfully',
-                'data'    => $film
-            ], 200);
+                'success' => false,
+                'message' => 'Anda bukan admin!'
+            ], 403);
         }
 
+        $film->delete();
+
         return response()->json([
-            'success' => false,
-            'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
-        ], 404);
+            'success' => true,
+            'message' => 'Data Film is delete successfully',
+            'data'    => $film
+        ], 200);
     }
 
     public function search($name)

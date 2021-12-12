@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Validator;
 
 class FeedbackController extends Controller
 {
+    public function __construct()
+    {
+        return $this->middleware('auth:api')->only(['store', 'update', 'destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -21,7 +26,7 @@ class FeedbackController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Semua daftar table peran berhasil ditampilkan',
+            'message' => 'Semua daftar table feedback berhasil ditampilkan',
             'total' => $total,
             'data'    => $feedback
         ], 200);
@@ -110,23 +115,25 @@ class FeedbackController extends Controller
 
         $feedback = Feedback::find($id);
 
-        if ($feedback) {
-            $feedback->update([
-                'ulasan'  => $request->ulasan ?? $feedback->ulasan,
-                'rating' => $request->rating ?? $feedback->rating
-            ]);
+        $user = auth()->user();
 
+        if ($feedback->user_id != $user->id) {
             return response()->json([
-                'success' => true,
-                'message' => 'Data Feedback is update successfully',
-                'data'    => $feedback
-            ], 200);
+                'success' => false,
+                'message' => 'Data bukan milik anda!'
+            ], 403);
         }
 
+        $feedback->update([
+            'ulasan'  => $request->ulasan ?? $feedback->ulasan,
+            'rating' => $request->rating ?? $feedback->rating
+        ]);
+
         return response()->json([
-            'success' => false,
-            'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
-        ], 404);
+            'success' => true,
+            'message' => 'Data Feedback is update successfully',
+            'data'    => $feedback
+        ], 200);
     }
 
     /**
@@ -139,20 +146,22 @@ class FeedbackController extends Controller
     {
         $feedback = Feedback::find($id);
 
-        if ($feedback) {
-            $feedback->delete();
+        $user = auth()->user();
 
+        if ($feedback->user_id != $user->id) {
             return response()->json([
-                'success' => true,
-                'message' => 'Data Feedback is delete successfully',
-                'data'    => $feedback
-            ], 200);
+                'success' => false,
+                'message' => 'Data bukan milik anda!'
+            ], 403);
         }
 
+        $feedback->delete();
+
         return response()->json([
-            'success' => false,
-            'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
-        ], 404);
+            'success' => true,
+            'message' => 'Data Feedback is delete successfully',
+            'data'    => $feedback
+        ], 200);
     }
 
     public function getDataById(Request $request)
@@ -167,7 +176,7 @@ class FeedbackController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Data film id : ' . $user_id . ' dan data cast id : ' . $film_id . ' berhasil ditampilkan',
+            'message' => 'Data user id : ' . $user_id . ' dan data film id : ' . $film_id . ' berhasil ditampilkan',
             'total' => $total,
             'data'    => $feedback
         ], 200);

@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Validator;
 
 class PeranController extends Controller
 {
+    public function __construct()
+    {
+        return $this->middleware('auth:api')->only(['store', 'update', 'destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      *

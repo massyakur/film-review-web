@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Validator;
 
 class GenreController extends Controller
 {
+    public function __construct()
+    {
+        return $this->middleware('auth:api')->only(['store', 'update', 'destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -104,23 +109,24 @@ class GenreController extends Controller
 
         $genre = Genre::find($id);
 
-        if ($genre) {
-            # meng-update data genre
-            $genre->update([
-                'name'  => $request->name
-            ]);
+        $user = auth()->user();
 
+        if ($genre->user_id != $user->id) {
             return response()->json([
-                'success' => true,
-                'message' => 'Data Genre is update successfully',
-                'data'    => $genre
-            ], 200);
+                'success' => false,
+                'message' => 'Anda bukan admin!'
+            ], 403);
         }
 
+        $genre->update([
+            'name'  => $request->name
+        ]);
+
         return response()->json([
-            'success' => false,
-            'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
-        ], 404);
+            'success' => true,
+            'message' => 'Data Genre is update successfully',
+            'data'    => $genre
+        ], 200);
     }
 
     /**
@@ -133,20 +139,22 @@ class GenreController extends Controller
     {
         $genre = Genre::find($id);
 
-        if ($genre) {
-            $genre->delete();
+        $user = auth()->user();
 
+        if ($genre->user_id != $user->id) {
             return response()->json([
-                'success' => true,
-                'message' => 'Genre is delete successfully',
-                'data'    => $genre
-            ], 200);
+                'success' => false,
+                'message' => 'Anda bukan admin!'
+            ], 403);
         }
 
+        $genre->delete();
+
         return response()->json([
-            'success' => false,
-            'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
-        ], 404);
+            'success' => true,
+            'message' => 'Genre is delete successfully',
+            'data'    => $genre
+        ], 200);
     }
 
     public function search($name)

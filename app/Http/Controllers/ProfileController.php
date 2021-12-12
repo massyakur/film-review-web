@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
 {
+    public function __construct()
+    {
+        return $this->middleware('auth:api')->only(['store', 'update']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -83,23 +88,25 @@ class ProfileController extends Controller
 
         $profile = Profile::find($id);
 
-        if ($profile) {
-            $profile->update([
-                'age'  => $request->age ?? $profile->age,
-                'bio' => $request->bio ?? $profile->bio,
-                'address' => $request->address ?? $profile->address
-            ]);
+        $user = auth()->user();
 
+        if ($profile->user_id != $user->id) {
             return response()->json([
-                'success' => true,
-                'message' => 'Data Profile is update successfully',
-                'data'    => $profile
-            ], 200);
+                'success' => false,
+                'message' => 'Data ini bukan milik anda!'
+            ], 403);
         }
 
+        $profile->update([
+            'age'  => $request->age ?? $profile->age,
+            'bio' => $request->bio ?? $profile->bio,
+            'address' => $request->address ?? $profile->address
+        ]);
+
         return response()->json([
-            'success' => false,
-            'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
-        ], 404);
+            'success' => true,
+            'message' => 'Data Profile is update successfully',
+            'data'    => $profile
+        ], 200);
     }
 }
