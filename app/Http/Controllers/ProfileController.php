@@ -37,7 +37,7 @@ class ProfileController extends Controller
         # membuat validasi
         $validator = Validator::make($request->all(), [
             'user_id'   => 'required',
-            'age' => 'required|numeric',
+            'age' => 'required|numeric|digits:2',
         ]);
 
         # membuat kondisi jika ada salah satu
@@ -85,7 +85,7 @@ class ProfileController extends Controller
     {
         # membuat validasi
         $validator = Validator::make($request->all(), [
-            'age' => 'numeric',
+            'age' => 'numeric|digits:2',
         ]);
 
         # membuat kondisi jika ada salah satu

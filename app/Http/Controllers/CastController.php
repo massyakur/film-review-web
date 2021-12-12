@@ -1,0 +1,152 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Cast;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
+class CastController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $cast = Cast::latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Semua daftar table cast berhasil ditampilkan',
+            'data'    => $cast
+        ], 200);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name'   => 'required',
+            'age' => 'required|numeric|digits:2'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $cast = Cast::create([
+            'name'  => $request->name,
+            'age' => $request->age,
+            'bio' => $request->bio
+        ]);
+
+        if ($cast) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Cast is added successfully',
+                'data'    => $cast
+            ], 201);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Data Cast failed to save',
+        ], 409);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Cast  $cast
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $cast = Cast::find($id);
+
+        if ($cast) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Get Detail Cast',
+                'data'    => $cast
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
+        ], 404);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Cast  $cast
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'age' => 'numeric|digits:2'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $cast = Cast::find($id);
+
+        if ($cast) {
+            $cast->update([
+                'name'  => $request->name ?? $cast->name,
+                'age' => $request->age ?? $cast->age,
+                'bio' => $request->bio ?? $cast->bio
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Cast is update successfully',
+                'data'    => $cast
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
+        ], 404);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Cast  $cast
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $cast = Cast::find($id);
+
+        if ($cast) {
+            $cast->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cast is delete successfully',
+                'data'    => $cast
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
+        ], 404);
+    }
+}

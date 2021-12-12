@@ -39,3 +39,10 @@ Route::apiResource('profile', 'ProfileController');
 # Route Resource Film
 Route::apiResource('film', 'FilmController');
 Route::get('/film-by-id', 'FilmController@getDataById');
+
+# Route Resource Cast
+Route::apiResource('cast', 'CastController');
+
+# Route Resource Peran
+Route::apiResource('peran', 'PeranController');
+Route::get('/peran-by-id', 'PeranController@getDataById');
