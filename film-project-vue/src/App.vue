@@ -58,7 +58,7 @@
   <v-app-bar app color="success" dark>
     <!-- -->
     <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-    <v-toolbar-title>SanbercodeApps</v-toolbar-title>
+    <v-toolbar-title>Kelompok-6Apps</v-toolbar-title>
 
     <!-- pemisah konten -->
     <v-spacer></v-spacer>
@@ -79,7 +79,7 @@
 
   <v-footer app>
     <!--footer-->
-    @Sanbercode | VueJS
+    @Kelompok-6 | VueJS
   </v-footer>
 </v-app>
 </template>
