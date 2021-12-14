@@ -5,9 +5,9 @@ namespace App;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
-class Film extends Model
+class GenreFilm extends Model
 {
-    protected $fillable = ['title', 'description', 'tahun'];
+    protected $fillable = ['genre_id', 'film_id'];
 
     protected $keyType = 'string';
 
@@ -23,18 +23,13 @@ class Film extends Model
         });
     }
 
-    public function peran()
+    public function genre()
     {
-        return $this->hasMany(Peran::class);
+        return $this->belongsTo(Genre::class);
     }
 
-    public function feedback()
+    public function film()
     {
-        return $this->hasMany(Feedback::class);
-    }
-
-    public function genre_film()
-    {
-        return $this->hasMany(GenreFilm::class);
+        return $this->belongsTo(Film::class);
     }
 }

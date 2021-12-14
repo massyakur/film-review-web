@@ -111,7 +111,7 @@ class GenreController extends Controller
 
         $user = auth()->user();
 
-        if ($genre->user_id != $user->id) {
+        if ($genre->genre_film->film->feedback->user != $user->id) {
             return response()->json([
                 'success' => false,
                 'message' => 'Anda bukan admin!'
@@ -141,7 +141,7 @@ class GenreController extends Controller
 
         $user = auth()->user();
 
-        if ($genre->user_id != $user->id) {
+        if ($genre->genre_film->film->feedback->user != $user->id) {
             return response()->json([
                 'success' => false,
                 'message' => 'Anda bukan admin!'

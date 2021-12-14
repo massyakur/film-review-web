@@ -25,8 +25,8 @@ class Genre extends Model
         });
     }
 
-    public function film()
+    public function genre_film()
     {
-        return $this->hasMany(Film::class);
+        return $this->hasMany(GenreFilm::class);
     }
 }

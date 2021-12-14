@@ -32,22 +32,6 @@ class FilmController extends Controller
         ], 200);
     }
 
-    public function getDataById(Request $request)
-    {
-        $genre_id = $request->genre_id;
-
-        $film = Film::where('genre_id', $genre_id)->latest()->get();
-
-        $total = count($film);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Data user id : ' . $genre_id . ' berhasil ditampilkan',
-            'total' => $total,
-            'data'    => $film
-        ], 200);
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -57,10 +41,9 @@ class FilmController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title'   => 'required|max:45',
+            'title'   => 'required|max:45|unique:films,title',
             'description' => 'required',
-            'tahun' => 'required|digits:4|numeric|max:' . (date('Y')),
-            'genre_id' => 'required'
+            'tahun' => 'required|digits:4|numeric|max:' . (date('Y'))
         ]);
 
         if ($validator->fails()) {
@@ -70,8 +53,7 @@ class FilmController extends Controller
         $film = Film::create([
             'title'  => $request->title,
             'description' => $request->description,
-            'tahun' => $request->tahun,
-            'genre_id' => $request->genre_id,
+            'tahun' => $request->tahun
         ]);
 
         if ($film) {
@@ -132,27 +114,26 @@ class FilmController extends Controller
 
         $film = Film::find($id);
 
-        $user = auth()->user();
+        // $user = auth()->user();
 
-        if ($film->feedback->user_id != $user->id) {
+        if ($film) {
+            $film->update([
+                'title'  => $request->title ?? $film->title,
+                'description' => $request->description ?? $film->description,
+                'tahun' => $request->tahun ?? $film->tahun
+            ]);
+
             return response()->json([
-                'success' => false,
-                'message' => 'Anda bukan admin!'
-            ], 403);
+                'success' => true,
+                'message' => 'Data Film is update successfully',
+                'data'    => $film
+            ], 200);
         }
 
-        $film->update([
-            'title'  => $request->title ?? $film->title,
-            'description' => $request->description ?? $film->description,
-            'tahun' => $request->tahun ?? $film->tahun,
-            'genre_id' => $request->genre_id ?? $film->genre_id
-        ]);
-
         return response()->json([
-            'success' => true,
-            'message' => 'Data Film is update successfully',
-            'data'    => $film
-        ], 200);
+            'success' => false,
+            'message' => 'Anda bukan admin!'
+        ], 403);
     }
 
     /**
@@ -165,22 +146,20 @@ class FilmController extends Controller
     {
         $film = Film::find($id);
 
-        $user = auth()->user();
+        if ($film) {
+            $film->delete();
 
-        if ($film->feedback->user_id != $user->id) {
             return response()->json([
-                'success' => false,
-                'message' => 'Anda bukan admin!'
-            ], 403);
+                'success' => true,
+                'message' => 'Data Film is delete successfully',
+                'data'    => $film
+            ], 200);
         }
 
-        $film->delete();
-
         return response()->json([
-            'success' => true,
-            'message' => 'Data Film is delete successfully',
-            'data'    => $film
-        ], 200);
+            'success' => false,
+            'message' => 'Anda bukan admin!'
+        ], 403);
     }
 
     public function search($name)
