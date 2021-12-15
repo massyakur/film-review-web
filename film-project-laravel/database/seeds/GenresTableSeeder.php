@@ -14,73 +14,73 @@ class GenresTableSeeder extends Seeder
     public function run()
     {
         DB::table('genres')->insert([
-            'id' => 1,
+            'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
             'name' => "Horror",//Str::random(10),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         DB::table('genres')->insert([
-            'id' => 2,
+            'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
             'name' => "Action",
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         DB::table('genres')->insert([
-            'id' => 3,
+            'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
             'name' => "Science Fiction",
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         DB::table('genres')->insert([
-            'id' => 4,
+            'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
             'name' => "Romance",
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         DB::table('genres')->insert([
-            'id' => 5,
+            'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
             'name' => "Ficton",
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         DB::table('genres')->insert([
-            'id' => 6,
+            'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
             'name' => "Thriller",
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         DB::table('genres')->insert([
-            'id' => 7,
+            'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
             'name' => "Drama",
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         DB::table('genres')->insert([
-            'id' => 8,
+            'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
             'name' => "Comedy",
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         DB::table('genres')->insert([
-            'id' => 9,
+            'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
             'name' => "Musical",
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         DB::table('genres')->insert([
-            'id' => 10,
+            'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
             'name' => "Documentary",
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         DB::table('genres')->insert([
-            'id' => 11,
+            'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
             'name' => "Animation",
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         DB::table('genres')->insert([
-            'id' => 12,
+            'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
             'name' => "Indie Film",
             'created_at' => now(),
             'updated_at' => now(),
