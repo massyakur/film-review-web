@@ -16,15 +16,13 @@ class CastsTableSeeder extends Seeder
         $faker = Faker\Factory::create();
         for($i=1;$i<=50;$i++){
             DB::table('casts')->insert([
-            'id' => $i,
-            'name' => $faker->name(),
-            'age' => random_int(5, 70),
-            'bio' => $faker->text(),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+                'id' => $i,
+                'name' => $faker->name(),
+                'age' => random_int(5, 70),
+                'bio' => $faker->text(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
-        
-        
     }
 }
