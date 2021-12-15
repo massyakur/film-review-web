@@ -49,24 +49,26 @@ class CastController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
+        $user = auth()->user();
+
+        if ($user->role->name != 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda bukan admin!'
+            ], 403);
+        }
+
         $cast = Cast::create([
             'name'  => $request->name,
             'age' => $request->age,
             'bio' => $request->bio
         ]);
 
-        if ($cast) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Data Cast is added successfully',
-                'data'    => $cast
-            ], 201);
-        }
-
         return response()->json([
-            'success' => false,
-            'message' => 'Data Cast failed to save',
-        ], 409);
+            'success' => true,
+            'message' => 'Data Cast is added successfully',
+            'data'    => $cast
+        ], 201);
     }
 
     /**
@@ -112,24 +114,26 @@ class CastController extends Controller
 
         $cast = Cast::find($id);
 
-        if ($cast) {
-            $cast->update([
-                'name'  => $request->name ?? $cast->name,
-                'age' => $request->age ?? $cast->age,
-                'bio' => $request->bio ?? $cast->bio
-            ]);
+        $user = auth()->user();
 
+        if ($user->role->name != 'admin') {
             return response()->json([
-                'success' => true,
-                'message' => 'Data Cast is update successfully',
-                'data'    => $cast
-            ], 200);
+                'success' => false,
+                'message' => 'Anda bukan admin!'
+            ], 403);
         }
 
+        $cast->update([
+            'name'  => $request->name ?? $cast->name,
+            'age' => $request->age ?? $cast->age,
+            'bio' => $request->bio ?? $cast->bio
+        ]);
+
         return response()->json([
-            'success' => false,
-            'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
-        ], 404);
+            'success' => true,
+            'message' => 'Data Cast is update successfully',
+            'data'    => $cast
+        ], 200);
     }
 
     /**
@@ -142,20 +146,22 @@ class CastController extends Controller
     {
         $cast = Cast::find($id);
 
-        if ($cast) {
-            $cast->delete();
+        $user = auth()->user();
 
+        if ($user->role->name != 'admin') {
             return response()->json([
-                'success' => true,
-                'message' => 'Cast is delete successfully',
-                'data'    => $cast
-            ], 200);
+                'success' => false,
+                'message' => 'Anda bukan admin!'
+            ], 403);
         }
 
+        $cast->delete();
+
         return response()->json([
-            'success' => false,
-            'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
-        ], 404);
+            'success' => true,
+            'message' => 'Cast is delete successfully',
+            'data'    => $cast
+        ], 200);
     }
 
     public function search($name)

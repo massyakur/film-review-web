@@ -18,6 +18,8 @@ class CreateCastsTable extends Migration
             $table->string('name', 45);
             $table->integer('age');
             $table->text('bio')->nullable();
+            $table->uuid('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

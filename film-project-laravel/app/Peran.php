@@ -32,4 +32,9 @@ class Peran extends Model
     {
         return $this->belongsTo(Film::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo('App\user');
+    }
 }

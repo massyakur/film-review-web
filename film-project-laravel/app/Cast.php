@@ -25,6 +25,11 @@ class Cast extends Model
 
     public function peran()
     {
-        return $this->hasMany('App\Peran');
+        return $this->hasMany(Peran::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\user');
     }
 }

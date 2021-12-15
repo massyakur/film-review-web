@@ -50,24 +50,26 @@ class FilmController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
+        $user = auth()->user();
+
+        if ($user->role->name != 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda bukan admin!'
+            ], 403);
+        }
+
         $film = Film::create([
             'title'  => $request->title,
             'description' => $request->description,
             'tahun' => $request->tahun
         ]);
 
-        if ($film) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Data Film is added successfully',
-                'data'    => $film
-            ], 201);
-        }
-
         return response()->json([
-            'success' => false,
-            'message' => 'Data Film failed to save',
-        ], 409);
+            'success' => true,
+            'message' => 'Data Film is added successfully',
+            'data'    => $film
+        ], 201);
     }
 
     /**
@@ -114,26 +116,26 @@ class FilmController extends Controller
 
         $film = Film::find($id);
 
-        // $user = auth()->user();
+        $user = auth()->user();
 
-        if ($film) {
-            $film->update([
-                'title'  => $request->title ?? $film->title,
-                'description' => $request->description ?? $film->description,
-                'tahun' => $request->tahun ?? $film->tahun
-            ]);
-
+        if ($user->role->name != 'admin') {
             return response()->json([
-                'success' => true,
-                'message' => 'Data Film is update successfully',
-                'data'    => $film
-            ], 200);
+                'success' => false,
+                'message' => 'Anda bukan admin!'
+            ], 403);
         }
 
+        $film->update([
+            'title'  => $request->title ?? $film->title,
+            'description' => $request->description ?? $film->description,
+            'tahun' => $request->tahun ?? $film->tahun
+        ]);
+
         return response()->json([
-            'success' => false,
-            'message' => 'Anda bukan admin!'
-        ], 403);
+            'success' => true,
+            'message' => 'Data Film is update successfully',
+            'data'    => $film
+        ], 200);
     }
 
     /**
@@ -146,20 +148,22 @@ class FilmController extends Controller
     {
         $film = Film::find($id);
 
-        if ($film) {
-            $film->delete();
+        $user = auth()->user();
 
+        if ($user->role->name != 'admin') {
             return response()->json([
-                'success' => true,
-                'message' => 'Data Film is delete successfully',
-                'data'    => $film
-            ], 200);
+                'success' => false,
+                'message' => 'Anda bukan admin!'
+            ], 403);
         }
 
+        $film->delete();
+
         return response()->json([
-            'success' => false,
-            'message' => 'Anda bukan admin!'
-        ], 403);
+            'success' => true,
+            'message' => 'Data Film is delete successfully',
+            'data'    => $film
+        ], 200);
     }
 
     public function search($name)

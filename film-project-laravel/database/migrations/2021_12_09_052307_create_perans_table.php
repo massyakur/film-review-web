@@ -20,6 +20,8 @@ class CreatePeransTable extends Migration
             $table->uuid('cast_id');
             $table->foreign('cast_id')->references('id')->on('casts');
             $table->string('name', 45);
+            $table->uuid('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

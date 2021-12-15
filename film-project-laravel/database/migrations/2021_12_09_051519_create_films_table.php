@@ -18,6 +18,8 @@ class CreateFilmsTable extends Migration
             $table->string('title', 45);
             $table->text('description');
             $table->integer('tahun');
+            $table->uuid('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

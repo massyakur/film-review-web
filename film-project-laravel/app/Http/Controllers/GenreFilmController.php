@@ -44,6 +44,15 @@ class GenreFilmController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
+        $user = auth()->user();
+
+        if ($user->role->name != 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda bukan admin!'
+            ], 403);
+        }
+
         foreach ($request->genre_id as $genre_id) {
             $genre_film = GenreFilm::create([
                 'genre_id' => $genre_id,
@@ -51,18 +60,11 @@ class GenreFilmController extends Controller
             ]);
         }
 
-        if ($genre_film) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Data Genre Film is added successfully',
-                'data'    => $genre_film
-            ], 201);
-        }
-
         return response()->json([
-            'success' => false,
-            'message' => 'Data Genre Film failed to save',
-        ], 409);
+            'success' => true,
+            'message' => 'Data Genre Film is added successfully',
+            'data'    => $genre_film
+        ], 201);
     }
 
     /**
@@ -75,20 +77,22 @@ class GenreFilmController extends Controller
     {
         $genre_film = GenreFilm::find($id);
 
-        if ($genre_film) {
-            $genre_film->delete();
+        $user = auth()->user();
 
+        if ($user->role->name != 'admin') {
             return response()->json([
-                'success' => true,
-                'message' => 'Data Genre Film is delete successfully',
-                'data'    => $genre_film
-            ], 200);
+                'success' => false,
+                'message' => 'Anda bukan admin!'
+            ], 403);
         }
 
+        $genre_film->delete();
+
         return response()->json([
-            'success' => false,
-            'message' => 'Anda bukan admin!'
-        ], 403);
+            'success' => true,
+            'message' => 'Data Genre Film is delete successfully',
+            'data'    => $genre_film
+        ], 200);
     }
 
     public function getDataByGenreId(Request $request)

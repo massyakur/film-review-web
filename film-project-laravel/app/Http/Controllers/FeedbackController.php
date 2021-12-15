@@ -117,10 +117,10 @@ class FeedbackController extends Controller
 
         $user = auth()->user();
 
-        if ($feedback->user_id != $user->id) {
+        if ($user->id != $feedback->user_id && $user->role->name != 'admin') {
             return response()->json([
                 'success' => false,
-                'message' => 'Data bukan milik anda!'
+                'message' => 'Data ini bukan milik anda!'
             ], 403);
         }
 
@@ -148,10 +148,10 @@ class FeedbackController extends Controller
 
         $user = auth()->user();
 
-        if ($feedback->user_id != $user->id) {
+        if ($user->id != $feedback->user_id && $user->role->name != 'admin') {
             return response()->json([
                 'success' => false,
-                'message' => 'Data bukan milik anda!'
+                'message' => 'Data ini bukan milik anda!'
             ], 403);
         }
 

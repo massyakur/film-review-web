@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Genre extends Model
 {
-    protected $table = 'genres';
-
     protected $fillable = ['name'];
 
     protected $keyType = 'string';
@@ -28,5 +26,10 @@ class Genre extends Model
     public function genre_film()
     {
         return $this->hasMany(GenreFilm::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\user');
     }
 }

@@ -50,24 +50,26 @@ class PeranController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
+        $user = auth()->user();
+
+        if ($user->role->name != 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda bukan admin!'
+            ], 403);
+        }
+
         $peran = Peran::create([
             'film_id'  => $request->film_id,
             'cast_id' => $request->cast_id,
             'name' => $request->name
         ]);
 
-        if ($peran) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Data Peran is added successfully',
-                'data'    => $peran
-            ], 201);
-        }
-
         return response()->json([
-            'success' => false,
-            'message' => 'Data Peran failed to save',
-        ], 409);
+            'success' => true,
+            'message' => 'Data Peran is added successfully',
+            'data'    => $peran
+        ], 201);
     }
 
     /**
@@ -113,22 +115,24 @@ class PeranController extends Controller
 
         $peran = Peran::find($id);
 
-        if ($peran) {
-            $peran->update([
-                'name'  => $request->name ?? $peran->name
-            ]);
+        $user = auth()->user();
 
+        if ($user->role->name != 'admin') {
             return response()->json([
-                'success' => true,
-                'message' => 'Data Peran is update successfully',
-                'data'    => $peran
-            ], 200);
+                'success' => false,
+                'message' => 'Anda bukan admin!'
+            ], 403);
         }
 
+        $peran->update([
+            'name'  => $request->name ?? $peran->name
+        ]);
+
         return response()->json([
-            'success' => false,
-            'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
-        ], 404);
+            'success' => true,
+            'message' => 'Data Peran is update successfully',
+            'data'    => $peran
+        ], 200);
     }
 
     /**
@@ -141,20 +145,22 @@ class PeranController extends Controller
     {
         $peran = Peran::find($id);
 
-        if ($peran) {
-            $peran->delete();
+        $user = auth()->user();
 
+        if ($user->role->name != 'admin') {
             return response()->json([
-                'success' => true,
-                'message' => 'Data Peran is delete successfully',
-                'data'    => $peran
-            ], 200);
+                'success' => false,
+                'message' => 'Anda bukan admin!'
+            ], 403);
         }
 
+        $peran->delete();
+
         return response()->json([
-            'success' => false,
-            'message' => 'Data dengan id : ' . $id . ' tidak ditemukan'
-        ], 404);
+            'success' => true,
+            'message' => 'Data Peran is delete successfully',
+            'data'    => $peran
+        ], 200);
     }
 
     public function getDataById(Request $request)

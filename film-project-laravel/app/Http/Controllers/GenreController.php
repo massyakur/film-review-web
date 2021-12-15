@@ -48,22 +48,24 @@ class GenreController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
+        $user = auth()->user();
+
+        if ($user->role->name != 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda bukan admin!'
+            ], 403);
+        }
+
         $genre = Genre::create([
             'name'  => $request->name
         ]);
 
-        if ($genre) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Data Genre is added successfully',
-                'data'    => $genre
-            ], 201);
-        }
-
         return response()->json([
-            'success' => false,
-            'message' => 'Data Genre failed to save',
-        ], 409);
+            'success' => true,
+            'message' => 'Data Genre is added successfully',
+            'data'    => $genre
+        ], 201);
     }
 
     /**
@@ -111,7 +113,7 @@ class GenreController extends Controller
 
         $user = auth()->user();
 
-        if ($genre->genre_film->film->feedback->user != $user->id) {
+        if ($user->role->name != 'admin') {
             return response()->json([
                 'success' => false,
                 'message' => 'Anda bukan admin!'
@@ -141,7 +143,7 @@ class GenreController extends Controller
 
         $user = auth()->user();
 
-        if ($genre->genre_film->film->feedback->user != $user->id) {
+        if ($user->role->name != 'admin') {
             return response()->json([
                 'success' => false,
                 'message' => 'Anda bukan admin!'

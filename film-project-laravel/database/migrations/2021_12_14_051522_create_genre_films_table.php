@@ -19,6 +19,8 @@ class CreateGenreFilmsTable extends Migration
             $table->foreign('genre_id')->references('id')->on('genres');
             $table->uuid('film_id');
             $table->foreign('film_id')->references('id')->on('films');
+            $table->uuid('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

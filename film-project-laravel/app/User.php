@@ -55,18 +55,49 @@ class User extends Authenticatable implements JWTSubject
 
     public function profile()
     {
-        return $this->hasOne('App\Profile');
+        return $this->hasOne(Profile::class);
     }
 
     public function feedback()
     {
-        return $this->hasMany('App\Feedback');
+        return $this->hasMany(Feedback::class);
     }
 
     public function otp_code()
     {
-        return $this->hasOne('App\OtpCode');
+        return $this->hasOne(OtpCode::class);
     }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function film()
+    {
+        return $this->hasOne('App\Film');
+    }
+
+    public function genre()
+    {
+        return $this->hasOne('App\Genre');
+    }
+
+    public function cast()
+    {
+        return $this->hasOne('App\Cast');
+    }
+
+    public function peran()
+    {
+        return $this->hasOne('App\Peran');
+    }
+
+    public function gen_film()
+    {
+        return $this->hasOne('App\GenreFilm');
+    }
+
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

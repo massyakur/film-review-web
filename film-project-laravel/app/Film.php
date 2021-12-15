@@ -37,4 +37,9 @@ class Film extends Model
     {
         return $this->hasMany(GenreFilm::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo('App\user');
+    }
 }

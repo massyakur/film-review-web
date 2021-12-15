@@ -90,7 +90,7 @@ class ProfileController extends Controller
 
         $user = auth()->user();
 
-        if ($profile->user_id != $user->id) {
+        if ($user->id != $profile->user_id && $user->role->name != 'admin') {
             return response()->json([
                 'success' => false,
                 'message' => 'Data ini bukan milik anda!'
